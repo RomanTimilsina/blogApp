@@ -1,28 +1,79 @@
+import { useLocation, Link } from 'react-router-dom'
 import './singlePost.css'
+import { useContext, useEffect, useState } from 'react'
+import axios from 'axios'
+import { Context } from '../../context/Context'
 
 export default function SinglePost() {
+    const [singlePost, setSinglePost] = useState([])
+    const location = useLocation()
+    const path = location.pathname.split('/')[2]
+    const { user } = useContext(Context)
+    
+
+    useEffect(() => {
+        const getPost = async () => {
+            const res = await axios.get(`http://localhost:5000/api/post/${path}`)
+            // console.log(res)
+            setSinglePost(res.data)
+            console.log('singlePOst:', res.data)
+        }
+        getPost()
+    },[path])
+
+    const handleDelete = async () => {
+        try {
+          const res = await axios.delete(
+            `http://localhost:5000/api/post/${path}`,
+            { data: { username: user.username } } // ✅ username sent in request body
+          );
+      
+          console.log("handleDelete:", res.data);
+          window.location.replace("/"); // redirect to home after successful delete
+        } catch (err) {
+          console.error("Delete error:", err.response ? err.response.data : err.message);
+        }
+      };
+
+      const handleWrite = async () => {
+        try {
+            console.log(path)
+            // window.location.replace(`/write/${path}`);
+            window.location.replace(`/write?path=${path}&title=${encodeURIComponent(singlePost.title)}&desc=${encodeURIComponent(singlePost.desc)}`);
+        } catch(err) {
+
+        }
+      }
+
   return (
     <div className='singlePost'>
         <div className="singlePostWrapper">
-            <img 
-            className='singlePostImg'
-            src="https://images.pexels.com/photos/1858175/pexels-photo-1858175.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" 
-            alt="" 
-            />
+            {singlePost.photo && 
+                <img 
+                className='singlePostImg'
+                src={`http://localhost:5000/images/${singlePost.photo}`}
+                alt="" 
+                />
+            }
             <h1 className="singlePostTitle">
-                <p className='title'>Lorem ipsum dolor sit amet
-                <div className="singlePostEdit">
-                    <i className="singlePostIcon fa-solid fa-pen"></i>
-                    <i className="singlePostIcon fa-solid fa-trash"></i>
-                </div>
+                <p className='title'>{singlePost.title}
+                
+                {
+                singlePost.username === user?.username &&
+                (<div className="singlePostEdit">
+                    <i className="singlePostIcon fa-solid fa-pen" onClick={handleWrite}></i>
+                    <i className="singlePostIcon fa-solid fa-trash" onClick={handleDelete}></i>
+                </div>)}
                 </p>
                 
                 <div className="singlePostInfo">
-                    <span className="singlePostAuthor">Person</span>
-                    <span className="singlePostDate">1 hr ago</span>
+                    <Link to={`/?user=${singlePost.username}`} className='link'>
+                    <span className="singlePostAuthor">Author: {singlePost.username}</span>
+                    </Link>
+                    <span className="singlePostDate">{new Date(singlePost.createdAt).toDateString()}</span>
                 </div>
                 <p className='singlePageDesc'>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Soluta inventore adipisci repudiandae eveniet in quae? Quam exercitationem voluptatum a cupiditate ipsa dolorum, porro excepturi repellendus itaque eligendi perspiciatis nesciunt harum?Lorem, ipsum dolor sit amet consectetur adipisicing elit. Soluta inventore adipisci repudiandae eveniet in quae? Quam exercitationem voluptatum a cupiditate ipsa dolorum, porro excepturi repellendus itaque eligendi perspiciatis nesciunt harum?Lorem, ipsum dolor sit amet consectetur adipisicing elit. Soluta inventore adipisci repudiandae eveniet in quae? Quam exercitationem voluptatum a cupiditate ipsa dolorum, porro excepturi repellendus itaque eligendi perspiciatis nesciunt harum?Lorem, ipsum dolor sit amet consectetur adipisicing elit. Soluta inventore adipisci repudiandae eveniet in quae? Quam exercitationem voluptatum a cupiditate ipsa dolorum, porro excepturi repellendus itaque eligendi perspiciatis nesciunt harum?
+                    {singlePost.desc}
                 </p>
             </h1>
         </div>

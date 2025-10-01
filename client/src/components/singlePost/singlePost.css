@@ -54,6 +54,7 @@
 }
 
 .singlePostAuthor {
+    cursor: pointer;
     /* color: grey; */
     /* margin-right: 10px; */
 }

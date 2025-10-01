@@ -45,12 +45,12 @@ router.put("/:id", async (req, res) => {
 // DELETE POST
 router.delete("/:id", async (req, res) => {
     try {
+        console.log(req.params.id)
       const post = await Post.findById(req.params.id);
-  
+        console.log(req.body.username)
       if (!post) {
         return res.status(404).json("Post not found");
       }
-  
       if (post.username === req.body.username) {
         try {
           await post.deleteOne(); // ✅ correct Mongoose method

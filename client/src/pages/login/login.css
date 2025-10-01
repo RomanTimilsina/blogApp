@@ -50,6 +50,11 @@
     cursor: pointer;
 }
 
+.loginButton:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
 .loginButton:hover {
     background-color: lightgreen;
     color: blue;

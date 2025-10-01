@@ -1,15 +1,15 @@
 import Post from '../post/post'
 import './posts.css'
 
-export default function Posts() {
+export default function Posts({posts}) {
+  console.log(posts)
   return (
     <div className='posts'>
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
+      {
+        posts.map((p) => (
+          <Post post={p} key={p.title} />
+        ))
+      }
 
     </div>
   )

@@ -39,10 +39,13 @@ export default function TopBar() {
         </ul>
       </div>
       <div className='topRight'>
-        { user ? (<img className='topImg' 
-            src={user.profilePic} 
+        { user ? 
+        <Link to={`/settings?${user.profilePic}`}>
+        (<img className='topImg' 
+            src={`http://localhost:5000/images/${user.profilePic}`} 
             alt="" 
             />)
+        </Link>
              : 
             (<span className='links'>
             <Link className='link registerLink' to='/register' >REGISTER</Link>

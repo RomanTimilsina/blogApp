@@ -10,6 +10,7 @@ export default function SinglePost() {
     const path = location.pathname.split('/')[2]
     const { user } = useContext(Context)
     
+    console.log(singlePost)
 
     useEffect(() => {
         const getPost = async () => {
@@ -37,9 +38,8 @@ export default function SinglePost() {
 
       const handleWrite = async () => {
         try {
-            console.log(path)
             // window.location.replace(`/write/${path}`);
-            window.location.replace(`/write?path=${path}&title=${encodeURIComponent(singlePost.title)}&desc=${encodeURIComponent(singlePost.desc)}`);
+            window.location.replace(`/write?path=${path}&title=${encodeURIComponent(singlePost.title)}&desc=${encodeURIComponent(singlePost.desc)}&photo=${encodeURIComponent(singlePost.photo)}`);
         } catch(err) {
 
         }
@@ -59,7 +59,7 @@ export default function SinglePost() {
                 <p className='title'>{singlePost.title}
                 
                 {
-                singlePost.username === user?.username &&
+                singlePost.userId === user?._id &&
                 (<div className="singlePostEdit">
                     <i className="singlePostIcon fa-solid fa-pen" onClick={handleWrite}></i>
                     <i className="singlePostIcon fa-solid fa-trash" onClick={handleDelete}></i>

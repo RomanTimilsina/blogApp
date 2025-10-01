@@ -15,8 +15,9 @@ export default function Write() {
     const path = queryParams.get("path");
     const titleQuery = queryParams.get("title")
     const descQuery = queryParams.get('desc')
+    const photoQuery = queryParams.get('photo')
 
-    console.log(path)
+    console.log("userId:",user)
 
     useEffect(() => {
         if (titleQuery) setTitle(titleQuery)
@@ -28,7 +29,8 @@ export default function Write() {
         const newPost = {
             title,
             desc,
-            username: user.username
+            username: user.username,
+            userId: user._id
         }
         if(file) {
             const data = new FormData()
@@ -45,12 +47,11 @@ export default function Write() {
         try {
             if (path) {
                 const res = await axios.put(` http://localhost:5000/api/post/${path}` , newPost)
-                window.location.replace('/post/'+res.data._id)
+                window.location.replace('/post/' + res.data._id)
 
             } else {
                 const res = await axios.post('http://localhost:5000/api/post', newPost)
                 window.location.replace('/post/'+res.data._id)
-
             }
             // window.location.replace('/post/'+res.data._id)
             // console.log(res)
@@ -59,11 +60,15 @@ export default function Write() {
         }
     }
 
-
-
   return (
     <div className='write'>
-        {file && (
+        {(!photoQuery && file) && (
+        <img className="writeImg" src={URL.createObjectURL(file)} alt="" />
+        )}
+        {(photoQuery && !file) && (
+        <img className="writeImg" src={`http://localhost:5000/images/${photoQuery}`} alt="" />
+        )}
+        {(photoQuery && file) && (
         <img className="writeImg" src={URL.createObjectURL(file)} alt="" />
         )}
             <form className='writeForm' onSubmit={handleSubmit}>
